@@ -1,0 +1,174 @@
+@charset 'UTF-8';
+/*
+  module: m-box-fixed
+  - 固定幅・中央揃えのボックス
+*/
+.m-box-fixed {
+	width : 960px;
+	margin : 0 auto;
+}
+
+/*
+	module:　m-opacityHover
+	- ホバー時に下の画像を透過させる
+-----------------------------------------------------------------*/
+.m-box-opacity {
+	display : inline-block;
+}
+.m-box-opacity:hover img {
+	opacity : 0.7;
+	-ms-filter : 'progid:DXImageTransform.Microsoft.Alpha(Opacity=70)';
+}
+
+/*
+	module:box-figure
+	- 画像とテキストの横並び
+*/
+.m-box-figure1 {
+	*zoom : 1;
+}
+.m-box-figure1:after {
+	content : ' ';
+	display : table;
+	clear : both;
+}
+.m-box-figure1 .figure-image {
+	float : left;
+	margin-right : 20px;
+}
+.m-box-figure1 .figure-text {
+	overflow : hidden;
+}
+
+.m-box-figure2 {
+	*zoom : 1;
+}
+.m-box-figure2:after {
+	content : ' ';
+	display : table;
+	clear : both;
+}
+.m-box-figure2 .figure-image {
+	float : right;
+	margin-left : 20px;
+}
+.m-box-figure2 .figure-text {
+	overflow : hidden;
+}
+
+/*
+	module: box-grid
+	- 汎用グリッド
+*/
+.m-box-grid {
+	margin : 0 -10px;
+	display : -ms-flexbox;
+	display : flex;
+	-ms-flex-wrap : wrap;
+	    flex-wrap : wrap;
+	height : 100vh;
+}
+.m-box-grid .grid-col3 {
+	width : 25%;
+	padding : 0 10px;
+	box-sizing : border-box;
+}
+.m-box-grid .grid-col4 {
+	width : 33.33333%;
+	padding : 0 10px;
+	box-sizing : border-box;
+}
+.m-box-grid .grid-label {
+	margin-bottom : 10px;
+	padding : 10px;
+	background : #000;
+	color : #fff;
+}
+.m-box-grid .grid-label a {
+	color : inherit;
+}
+.m-box-grid textarea {
+	width : 100%;
+	height : 90%;
+	padding : 10px;
+	box-sizing : border-box;
+}
+.m-box-grid iframe {
+	width : 100%;
+	height : 700px;
+	padding : 10px;
+	box-sizing : border-box;
+}
+
+/*
+	module:　m-list-news
+	- 新着情報
+-----------------------------------------------------------------*/
+.m-list-news > li {
+	padding : 10px 0;
+	border-bottom : 1px dotted #ccc;
+	line-height : 1.4;
+}
+.m-list-news > li dl dt {
+	float : left;
+	width : 9.5em;
+}
+.m-list-news > li dl dd {
+	overflow : hidden;
+	*zoom : 1;
+}
+.m-list-news > li dl dd a {
+	color : #962b20;
+}
+
+/*
+	module: m-list-indent
+	- テキストの頭出し
+-----------------------------------------------------------------*/
+.m-list-indent li {
+	margin-left : 1em;
+	text-indent : -1em;
+}
+
+/*
+	module:　m-table-common
+	- テーブルの基本スタイル
+-----------------------------------------------------------------*/
+.m-table-common {
+	width : 100%;
+	vertical-align : middle;
+}
+.m-table-common caption {
+	font-weight : bold;
+	padding-bottom : 5px;
+}
+.m-table-common thead th {
+	padding : 10px;
+	border : 1px solid #ccc;
+	background : #ffc99d;
+	font-size : 114%;
+	font-weight : bold;
+	line-height : 1.4;
+	text-align : center;
+	vertical-align : middle;
+}
+.m-table-common thead th:first-child {
+	background : #eebc93;
+}
+.m-table-common tbody th, .m-table-common tbody td {
+	padding : 10px;
+	border : 1px solid #ccc;
+	vertical-align : middle;
+	line-height : 1.4;
+}
+.m-table-common tbody th {
+	width : 20%;
+	background : #eee;
+	font-size : 114%;
+	font-weight : bold;
+	text-align : left;
+	vertical-align : middle;
+}
+.m-table-common tbody td {
+	vertical-align : middle;
+}

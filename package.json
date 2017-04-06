@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "devDependencies": {
+    "browser-sync": "~2.11.1",
+    "gulp": "^3.8.11",
+    "gulp-csscomb": "^3.0.6",
+    "gulp-imagemin": "~2.4.0",
+    "gulp-load-plugins": "^1.2.0",
+    "gulp-pleeease": "~2.0.2",
+    "gulp-plumber": "^1.0.1",
+    "gulp-sass": "~2.2.0",
+    "gulp-frontnote": "^1.0.1",
+    "imagemin-pngquant": "~4.2.2"
+  }
+}

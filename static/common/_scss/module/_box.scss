@@ -1,0 +1,91 @@
+@charset "UTF-8";
+
+/*
+  module: m-box-fixed
+  - 固定幅・中央揃えのボックス
+*/
+.m-box-fixed {
+	width: $fixedWidth;
+	margin: 0 auto;
+}
+
+/*
+	module:　m-opacityHover
+	- ホバー時に下の画像を透過させる
+-----------------------------------------------------------------*/
+.m-box-opacity {
+	display: inline-block;
+
+	&:hover img {
+		opacity: 0.7;
+	}
+}
+
+/*
+	module:box-figure
+	- 画像とテキストの横並び
+*/
+.m-box-figure1 {
+	@include clearfix;
+
+	.figure-image {
+		float: left;
+		margin-right: 20px;
+	}
+	.figure-text {
+		overflow: hidden;
+	}
+}
+.m-box-figure2 {
+	@include clearfix;
+
+	.figure-image {
+		float: right;
+		margin-left: 20px;
+	}
+	.figure-text {
+		overflow: hidden;
+	}
+}
+
+/*
+	module: box-grid
+	- 汎用グリッド
+*/
+.m-box-grid {
+	@include grid-row(10px);
+	height: 100vh;
+
+	.grid-col3 {
+		@include grid(12,3,10px);
+	}
+
+	.grid-col4 {
+		@include grid(12,4,10px);
+	}
+
+	.grid-label {
+		margin-bottom: 10px;
+		padding: 10px;
+		background: #000;
+		color: #fff;
+
+		a {
+			color: inherit;
+		}
+	}
+
+	textarea {
+		width: 100%;
+		height: 90%;
+		padding: 10px;
+		box-sizing: border-box;
+	}
+
+	iframe {
+		width: 100%;
+		height: 700px;
+		padding: 10px;
+		box-sizing: border-box;
+	}
+}

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie10 lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie10 lt-ie9 lt-ie8"><![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie10 lt-ie9"><![endif]-->
+<!--[if IE 9]><html class="no-js lt-ie10"> <![endif]-->
+<!--[if gt IE 9]><!--> <html lang="ja" class="no-js"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Theme & user.js Generator for Movable Type</title>
+	<meta name="description" content="概要文">
+	<meta name="keywords" content="キーワード">
+	<meta name="viewport" content="width=1024">
+
+	<meta property="og:type" content="website">
+	<meta property="og:image" content="">
+	<meta property="og:site_name" content="サイトタイトル">
+
+	<link rel="stylesheet" href="common/css/common.css">
+	<link rel="stylesheet" href="common/css/layout.css">
+	<link rel="stylesheet" href="common/css/module.css">
+	<link rel="stylesheet" href="common/css/unique/top.css">
+	<link rel="shortcut icon" href="favicon.ico">
+
+	<!--[if lt IE 9]>
+	<script src="common/lib/html5shiv/html5shiv-printshiv.min.js"></script>
+	<![endif]-->
+
+<script type="javascript/template" data-input-theme>
+{{#blogs}}
+---
+class: blog
+elements:
+  default_prefs:
+    component: ~
+    importer: default_prefs
+    data:
+      # == アップロード
+      # アップロード先 upload_destination / extra_path
+      upload_destination: '%s'
+      extra_path: 'files'
+      # 1: アップロード時に変更を許可する
+      allow_to_change_at_upload: 0
+      # 画像向きの修正 1: 画像の向きを自動的に修正する
+      normalize_orientation: 1
+      # ファイル名の変更 1: 日本語ファイル名を自動で変換する
+      auto_rename_non_ascii: 1
+      # 既存ファイルの処理
+      # 1: 既存のファイルを残して、別のファイル名でアップロードする
+      # 2: 既存のファイルを上書きする
+      # 3: アップロードしない
+      operation_if_exists: 1
+      enable_uploaddir: 1
+      # == 作成の既定値
+      # ステータス 1: 下書き 2: 公開
+      status_default: 1
+      # テキストフォーマット
+      convert_paras: 'richtext'
+      # コメント
+      allow_comments_default: 0
+      # トラックバック
+      allow_pings_default: 0
+      publish_empty_archive: 1
+  default_epprefs:
+    importer: default_epprefs
+    data:
+      entry: title,text
+      page: title,text
+  custom_fields:
+    component: commercial
+    data:
+{{#customfield}}
+      {{basename}}:
+        default: ''
+        description: ''
+        name: {{label}}
+        obj_type: entry
+        options: ~
+        required: '0'
+        tag: {{basename}}
+        type: {{type}}
+{{/customfield}}
+    importer: custom_fields
+  template_set:
+    importer: template_set
+    data:
+      templates:
+        system:
+id: theme_from_{{basename}}
+label: {{name}}のテーマ
+name: {{name}}のテーマ
+version: '1.0'
+{{/blogs}}
+</script>
+
+<script type="javascript/template" data-input-userjs>
+	switch(mtappVars.blog_id)
+	{
+		{{#blogs}}
+		case {{blog_id}}:
+			if ( mtappVars.screen_id == "edit-entry" ) {
+				$.MTAppCustomize({
+					basename: 'more',
+					show_field: 'hide',
+					show_parent: 'show'
+				});
+
+				$.MTAppFieldSort({
+					sort: '{{fieldraw}}',
+					otherFieldHide: true
+				});
+
+				{{#use_category}}
+				$.MTAppCustomize({
+					basename: 'category',
+					show_field: 'show'
+				});
+				{{/use_category}}
+			}
+		break;
+
+		{{/blogs}}
+	}
+</script>
+
+<script type="javascript/template" data-input-mtml>
+{{#blogs}}
+{{#field}}
+<p class="mat10">{{label}}</p>
+
+{{#is_normal}}
+<MTIf tag="{{basename}}">
+	<p><mt:{{basename}} nl2br="xhtml"></p>
+</MTIf>
+{{/is_normal}}
+
+{{#is_category}}
+<MTTopLevelCategories>
+	<p><mt:categorylabel></p>
+</MTTopLevelCategories>
+{{/is_category}}
+
+{{#is_asset}}
+<MTIf tag="{{basename}}">
+<MT{{basename}}Asset>
+	<p>
+		<mt:asseturl>
+	</p>
+	<p>
+		<img src="<mt:assetThumbnailURL width="">" alt="" />
+	</p>
+</MT{{basename}}Asset>
+</MTIf>
+{{/is_asset}}
+
+{{#is_checkbox}}
+<MTIf tag="{{basename}}">
+true
+</MTIf>
+{{/is_checkbox}}
+
+{{/field}}
+{{/blogs}}
+</script>
+
+</head>
+<body>
+	<noscript>JavascriptがOFFのため正しく表示されない可能性があります。</noscript>
+
+	<!-- [ WRAP ] -->
+	<div id="l-wrap">
+		<!-- [ GLOBAL HEADER ] -->
+		<div id="l-header">
+		</div>
+		<!-- [ /GLOBAL HEADER ] -->
+
+		<!-- [ CONTENT ] -->
+		<div id="l-content">
+			<div class="m-box-grid">
+				<div class="grid-col3">
+					<p class="grid-label">ファイル選択</p>
+					<input type="file" data-file>
+
+					<p class="grid-label mt20">ブログ選択</p>
+					<select name="" id="" data-blog>
+						<option value="">■選択してください</option>
+					</select>
+				</div>
+				<div class="grid-col3">
+					<p class="grid-label">theme.yaml（<a data-output-download>ダウンロード</a>）</p>
+					<textarea data-output-theme></textarea>
+				</div>
+				<div class="grid-col3">
+					<p class="grid-label">user.js</p>
+					<textarea data-output-userjs></textarea>
+				</div>
+				<div class="grid-col3">
+					<p class="grid-label">MTML Sample</p>
+					<textarea data-output-mtml></textarea>
+				</div>
+			</div>
+		</div>
+		<!-- [ /CONTENT ] -->
+
+		<!-- [ GLOBAL FOOTER ] -->
+		<div id="l-footer">
+
+		</div>
+		<!-- [ /GLOBAL FOOTER ] -->
+
+	</div>
+	<!-- [ WRAP ] -->
+
+	<script src="common/lib/jquery/jquery.js"></script>
+	<script src="common/lib/jszip/jszip.js"></script>
+	<script src="common/lib/mustache/mustache.js"></script>
+	<script src="common/js/site.js"></script>
+</body>
+</html>

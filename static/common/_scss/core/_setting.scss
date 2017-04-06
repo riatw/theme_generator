@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+// color setting
+$defaultBgColor: 	#fff;
+$defaultTxtColor: 	#000;
+$defaultLinkColor: 	#98117e;
+$defaultLinkVisitedColor: #98117e;
+$defaultLinkHoverColor: #98117e;
+
+// font size
+$defaultTxtSize: 	14px;
+
+// fixed width
+$fixedWidth: 960px;
+
+// media query smartphone
+$breakS: "screen and (min-width: 0px) and (max-width: 568px)";
+
+// media query tablet
+$breakM: "screen and (max-width: 960px)";
+
+// line height
+$lineHeight: 1.75;

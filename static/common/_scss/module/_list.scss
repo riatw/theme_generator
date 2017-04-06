@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+/*
+	module:　m-list-news
+	- 新着情報
+-----------------------------------------------------------------*/
+.m-list-news {
+	> li {
+		padding: 10px 0;
+		border-bottom: 1px dotted #ccc;
+		line-height: 1.4;
+
+		dl {
+			dt {
+				float: left;
+				width: 9.5em;
+			}
+			dd {
+				overflow: hidden;
+				*zoom: 1;
+
+				a {
+					color: #962b20;
+				}
+			}
+		}
+	}
+}
+
+/*
+	module: m-list-indent
+	- テキストの頭出し
+-----------------------------------------------------------------*/
+.m-list-indent {
+	li {
+		margin-left: 1em;
+		text-indent: -1em;
+	}
+}

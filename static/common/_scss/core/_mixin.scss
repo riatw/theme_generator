@@ -1,0 +1,202 @@
+@charset "UTF-8";
+
+// * font-family
+// - $type		sans-serif / serif
+// - $important	!important
+@mixin font-family($type, $important: false) {
+	@if $important == 'important' or $important == true {
+		$important: ' !important';
+	}
+
+	@if $type == sans-serif {
+		font-family: "游ゴシック", YuGothic, Meiryo, "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", "ＭＳ Ｐゴシック", Helvetica, Arial, sans-serif#{$important};
+	} @else if $type == mono {
+		font-family: Menlo, Monaco, Consolas, "Courier New", monospace #{$important};
+	} @else if $type == meiryo {
+		font-family: "メイリオ", Meiryo, "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", "游ゴシック", YuGothic, "ＭＳ Ｐゴシック", Helvetica, Arial, sans-serif#{$important};
+	} @else if $type == yu {
+		font-family: "游ゴシック", YuGothic, "メイリオ", Meiryo, "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", "ＭＳ Ｐゴシック", Helvetica, Arial, sans-serif#{$important};
+	}
+}
+
+// font-size
+@function fz( $baseSize, $newSize ) {
+	@return floor(percentage( $newSize / $baseSize ));
+}
+
+// inline-block-child
+@mixin inline-block-child() {
+	letter-spacing: -.40em;
+
+	> li {
+		display: inline-block;
+		letter-spacing: normal;
+	}
+}
+
+// clearfix
+@mixin clearfix() {
+	*zoom: 1;
+
+	&:after {
+		content: " ";
+		display: table;
+		clear: both;
+	}
+}
+
+// trans-opacity
+@mixin trans-opacity() {
+	&:hover {
+		text-decoration: none;
+		@include opacity(0.7);
+		@include transition(all 0.3s ease-out);
+	}
+}
+
+// css arrows
+@mixin arrow($width, $color, $direction, $position, $position-offset) {
+	$trans: (
+		left: right,
+		right: left,
+		top: bottom,
+		bottom: top,
+	);
+
+	position: absolute;
+	top: 50%;
+	#{$position}: #{$position-offset};
+	content: "";
+	width: 0;
+	height: 0;
+	margin-top: 0 - $width / 2;
+	border-style: solid;
+	border-width: $width / 2;
+	border-color: transparent;
+	border-#{map-get($trans, $direction)}-color: $color;
+	border-#{map-get($trans, $direction)}-width: $width;
+}
+
+// icon-font
+@mixin icon-font($size, $name, $color, $position, $position-offset) {
+	$font-map: (
+		"arrow-a02":"\e102",
+		"arrow-a03":"\e101",
+		"arrow-b02":"\e106",
+		"arrow-b04":"\e108",
+		"menu":"\e201",
+		"delete":"\e202",
+		"li-open":"\e203",
+		"li-close":"\e204",
+		"path":"\e205",
+		"pagetop":"\e206",
+		"blank":"\e207",
+		"global":"\e301",
+		"access":"\e302",
+		"panf":"\e303",
+		"contact":"\e304",
+		"map":"\e305",
+		"search":"\e306",
+		"rss":"\e307",
+		"school":"\e308",
+		"pencil":"\e309",
+		"smile":"\e310",
+		"flag":"\e311",
+		"star":"\e312",
+		"file-pdf":"\e401",
+		"file-word":"\e402",
+		"file-excel":"\e403"
+	);
+
+	font-family: 'fontname';
+	//speak: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	position: absolute;
+	#{$position}: #{$position-offset};
+	top: 50%;
+	margin-top: 0 - $size / 2;
+	color: $color;
+	font-size: $size;
+
+	content: map-get($font-map, $name);
+	text-indent: 0;
+}
+
+// flexbox grid no-flexbox letter-spacing hack
+// @mixin grid-row($gutter) {
+// 	margin: 0 (0-$gutter);
+// 	display: flex;
+// 	flex-wrap: wrap;
+
+// 	.no-flexbox & {
+// 		display: block;
+// 		letter-spacing: -.40em;
+// 	}
+// }
+
+// @mixin grid($col,$num, $gutter) {
+// 	// 1column 10% 2column 20%...
+// 	width: 100% / $col * $num;
+// 	padding: 0 $gutter;
+// 	box-sizing: border-box;
+// 	vertical-align: top;
+// 	letter-spacing: normal;
+
+// 	.no-flexbox & {
+// 		display: inline-block;
+// 	}
+// }
+
+// flexbox grid no-flexbox fontsize hack
+@mixin grid-row($gutter) {
+	margin: 0 (0-$gutter);
+	display: flex;
+	flex-wrap: wrap;
+}
+
+@mixin grid($col, $num, $gutter) {
+	// 1column 10% 2column 20%...
+	width: 100% / $col * $num;
+	padding: 0 $gutter;
+	box-sizing: border-box;
+}
+
+// .m-list-hoge {
+// 	@include grid-child(12,hoge,20px,14px);
+// }
+
+@mixin grid-child($col, $prefix, $gutter) {
+	// for
+	#{$prefix}-grid-#{$currentCol} {
+		// 1column 10% 2column 20%...
+		width: 100% / $col * $num;
+		padding: 0 $gutter;
+		box-sizing: border-box;
+		vertical-align: top;
+
+		.no-flexbox & {
+			display: inline-block;
+			font-size: $fz;
+		}
+	}
+	// endfor
+}
+
+// media query for smartphone
+@mixin viewSp {
+	@media #{$breakS} {
+		@content;
+	}
+}
+
+// media query for tablet
+@mixin viewTab {
+	@media #{$breakM} {
+		@content;
+	}
+}
