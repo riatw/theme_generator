@@ -97,6 +97,7 @@ version: '1.0'
 	switch(mtappVars.blog_id)
 	{
 		{{#blogs}}
+		// {{name}}
 		case {{blog_id}}:
 			if ( mtappVars.screen_id == "edit-entry" ) {
 				$.MTAppCustomize({
@@ -125,6 +126,7 @@ version: '1.0'
 
 <script type="javascript/template" data-input-mtml>
 {{#blogs}}
+<MTEntries lastn="1">
 {{#field}}
 <p class="mat10">{{label}}</p>
 
@@ -135,17 +137,14 @@ version: '1.0'
 {{/is_normal}}
 
 {{#is_category}}
-<MTTopLevelCategories>
+<MTEntryPrimaryCategory>
 	<p><mt:categorylabel></p>
-</MTTopLevelCategories>
+</MTEntryPrimaryCategory>
 {{/is_category}}
 
 {{#is_asset}}
 <MTIf tag="{{basename}}">
 <MT{{basename}}Asset>
-	<p>
-		<mt:asseturl>
-	</p>
 	<p>
 		<img src="<mt:assetThumbnailURL width="">" alt="" />
 	</p>
@@ -160,6 +159,7 @@ true
 {{/is_checkbox}}
 
 {{/field}}
+</MTEntries>
 {{/blogs}}
 </script>
 

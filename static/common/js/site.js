@@ -34,7 +34,7 @@ $(function () {
 
 			reader.onload = function() {
 				// console.log(reader.result.replace(/\r\n/gm,"\n"));
-				data = hoge( reader.result.replace(/\r\n/gm,"\n") );
+				data = hoge( reader.result.replace(/\r\n/gm,"\n") + "\n" );
 
 				for ( var i = 0; i < data.length; i++ ) {
 					var option = $("<option />").val(i).text(data[i].name);
@@ -201,10 +201,6 @@ $(function () {
 			rendarBuff[i].fieldraw = $.map(rendarBuff[i].field, function(value,key) {
 				var basename;
 
-				if ( value.type == "カテゴリ" ) {
-					return false;
-				}
-
 				if ( $.inArray(value.type, defaultFields) == -1 ) {
 					basename = "c:" + value.basename
 				}
@@ -212,11 +208,12 @@ $(function () {
 					basename = defaultFieldBasenames[value.type];
 				}
 
-				return basename
+				if ( value.type != "カテゴリ" ) {
+					return basename
+				}
 			}).join(",");
 		}
 
-		// console.log(rendarBuff);
 		return rendarBuff;
 	}
 });
