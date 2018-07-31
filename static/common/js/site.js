@@ -1,24 +1,53 @@
 $(function () {
 	var defaultFields = [
-		"タイトル",
+		"タイトル（1行テキスト）",
 		"本文",
-		"カテゴリ",
+		"カテゴリ（チェックボックス）",
 		"タグ",
 		"公開日"
 	];
 
 	var defaultFieldBasenames = {
-		"タイトル": "title",
+		"タイトル（1行テキスト）": "title",
 		"本文": "text",
 		"タグ": "tags",
-		"カテゴリ": "category"
+		"カテゴリ（チェックボックス）": "category"
 	};
 
 	var defaultFieldTagNames = {
-		"タイトル": "entrytitle",
+		"タイトル（1行テキスト）": "entrytitle",
 		"本文": "entrybody",
 		"タグ": "entrytags"
 	};
+
+	var fieldTransDoc = {
+		"タイトル": "タイトル",
+		"1行テキスト": "text",
+		"複数行テキスト": "textarea",
+		"リッチテキスト": "editor_textarea",
+		"チェックボックス": "checkbox",
+		"日時選択": "datetime",
+		"ドロップダウン": "select",
+		"ラジオボタン": "radio",
+		"ファイルアップロード": "file",
+		"画像アップロード": "image",
+		"GoogleMap": "googlemaps",
+		"ユニットシステムセット": "textarea",
+		"拡張フィールド": "textarea"
+	}
+
+	var excludeCustomFields = [
+		"entryunit",
+		"entryaltlink",
+		"entryaltfilelink",
+		"entryviewblank",
+	];
+
+	var excludeFields = [
+		"entryaltlink",
+		"entryaltfilelink",
+		"entryviewblank",
+	];
 
 	var data;
 
@@ -34,7 +63,7 @@ $(function () {
 
 			reader.onload = function() {
 				// console.log(reader.result.replace(/\r\n/gm,"\n"));
-				data = hoge( reader.result.replace(/\r\n/gm,"\n") + "\n" );
+				data = readFile( reader.result.replace(/\r\n/gm,"\n") + "\n", file.name );
 
 				for ( var i = 0; i < data.length; i++ ) {
 					var option = $("<option />").val(i).text(data[i].name);
@@ -82,7 +111,7 @@ $(function () {
 		});
 	}
 
-	function hoge(text) {
+	function readFile(text, filename) {
 		var arr;
 		var buff = [];
 		var localBuff;
@@ -96,98 +125,124 @@ $(function () {
 			category: 0
 		}
 
-		arr = text.split("\n");
+		var fileExt = filename.split(".").pop();
 
-		for ( var i = 0; i < arr.length; i++ ) {
-			var row = arr[i];
+		switch ( fileExt) {
+			case "md":
+			case "txt":
+				arr = text.split("\n");
 
-			// 第一階層（ブログ名）
-			if ( row.match(/^#\s/ ) || i == arr.length -1 ) {
-				var name = row.split("_").shift();
-				var basename = row.split("_").pop();
+				for ( var i = 0; i < arr.length; i++ ) {
+					var row = arr[i];
 
-				if ( localBuff ) {
-					localBuff.field.push(localBuff2);
+					// 第一階層（ブログ名）
+					if ( row.match(/^#\s/ ) || i == arr.length -1 ) {
+						var name = row.split("_").shift();
+						var basename = row.split("_").pop();
+
+						if ( localBuff ) {
+							localBuff.field.push(localBuff2);
+						}
+
+						currentBlog = name.replace(/^# /,"");
+
+						if ( localBuff ) {
+							buff.push(localBuff);
+						}
+
+						localBuff = {
+							name: currentBlog,
+							basename: basename,
+							field: []
+						};
+
+						localBuff2 = {};
+					}
+
+					// 第二階層（フィールド名）
+					if ( row.match(/^-\s/ ) && row.indexOf(":") == -1 ) {
+						currentLabel = row.replace(/-\s/,"");
+
+						if ( localBuff2.type ) {
+							localBuff.field.push(localBuff2);
+						}
+
+						localBuff2 = {
+							label: currentLabel
+						};
+					}
+
+					// 第三階層（フィールドプロパティ）
+					if ( row.match(/^\t-\s/ ) && row.indexOf(":") != -1 ) {
+						if ( row.indexOf("type:") != -1 || row.indexOf("basename:") != -1 ) {
+							var key = row.split(": ").shift().replace(/\s-\s/,"");
+							var value = row.split(": ").pop();
+
+							localBuff2[key] = value;
+						}
+					}
 				}
+			break;
 
-				currentBlog = name.replace(/^# /,"");
+			case "csv":
+				arr = Papa.parse(text).data;
 
-				if ( localBuff ) {
-					buff.push(localBuff);
+				for ( var i = 0; i < arr.length; i++ ) {
+					var row = arr[i];
+					var rowBlogName = row[0];
+					var rowFieldName = row[1];
+					var rowFieldType = row[2];
+					var rowFieldBasename = row[3];
+
+					// 第一階層（ブログ名）
+					if ( rowBlogName != currentBlog ) {
+						var name = rowBlogName.split("_").shift();
+						var basename = rowBlogName.split("_").pop();
+
+						currentBlog = rowBlogName;
+
+						if ( localBuff ) {
+							buff.push(localBuff);
+						}
+
+						localBuff = {
+							name: name,
+							basename: basename,
+							field: []
+						};
+					}
+
+					localBuff.field.push({
+						label: rowFieldName,
+						type_raw: rowFieldType,
+						type: fieldTransDoc[rowFieldType],
+						basename: rowFieldBasename
+					});
 				}
-
-				localBuff = {
-					name: currentBlog,
-					basename: basename,
-					field: []
-				};
-
-				localBuff2 = {};
-			}
-
-			// 第二階層（フィールド名）
-			if ( row.match(/^-\s/ ) && row.indexOf(":") == -1 ) {
-				currentLabel = row.replace(/-\s/,"");
-
-				if ( localBuff2.type ) {
-					localBuff.field.push(localBuff2);
-				}
-
-				localBuff2 = {
-					label: currentLabel
-				};
-			}
-
-			// 第三階層（フィールドプロパティ）
-			if ( row.match(/^\t-\s/ ) && row.indexOf(":") != -1 ) {
-				if ( row.indexOf("type:") != -1 || row.indexOf("basename:") != -1 ) {
-					var key = row.split(": ").shift().replace(/\s-\s/,"");
-					var value = row.split(": ").pop();
-
-					localBuff2[key] = value;
-				}
-			}
+			break;
 		}
 
 		// theme rendar
 		var rendarBuff = buff;
 
 		for ( var i = 0; i < rendarBuff.length; i++ ) {
-			// カスタムフィールドを抽出
-			rendarBuff[i].customfield = $.grep(rendarBuff[i].field, function(value,key) {
-				if ( value.type == "カテゴリ" ) {
-					rendarBuff[i].use_category = 1;
-				}
-
-				if ( $.inArray(value.type, defaultFields) == -1 ) {
-					return true;
-				}
-
-				rendarBuff[i].blog_id = i + 2;
-			});
-
 			// 標準フィールドのベースネームを設定
 			rendarBuff[i].field = $.grep(rendarBuff[i].field, function(value,key) {
 				var basename;
 
-				if ( $.inArray(value.type, defaultFields) != -1 ) {
+				// ベースネーム設定
+				if ( $.inArray(value.type_raw, defaultFieldTagNames) != -1 ) {
 					value.basename = defaultFieldTagNames[value.type];
 				}
 
-				return true
-			});
-
-			// 標準フィールドのベースネームを設定
-			rendarBuff[i].field = $.grep(rendarBuff[i].field, function(value,key) {
-				var basename;
-
+				// フィールドの種類ごとのフラグ設定
 				if ( value.type == "image" || value.type == "file" ) {
 					value.is_asset = 1;
 				}
 				else if ( value.type == "checkbox" ) {
 					value.is_checkbox = 1;
 				}
-				else if ( value.type == "カテゴリ" ) {
+				else if ( value.type == "カテゴリ（チェックボックス）" ) {
 					value.is_category = 1;
 				}
 				else {
@@ -201,17 +256,42 @@ $(function () {
 			rendarBuff[i].fieldraw = $.map(rendarBuff[i].field, function(value,key) {
 				var basename;
 
-				if ( $.inArray(value.type, defaultFields) == -1 ) {
+				if ( value.type_raw == "カテゴリ（チェックボックス）" ) {
+					return;
+				}
+
+				if ( $.inArray(value.type_raw, defaultFields) == -1 && $.inArray(value.basename, excludeFields) == -1 ) {
 					basename = "c:" + value.basename
 				}
 				else {
-					basename = defaultFieldBasenames[value.type];
+					basename = defaultFieldBasenames[value.type_raw];
 				}
 
-				if ( value.type != "カテゴリ" ) {
-					return basename
-				}
+				return basename
 			}).join(",");
+
+			// カスタムフィールドを抽出
+			rendarBuff[i].customfield = $.grep(rendarBuff[i].field, function(value,key) {
+				// 使用オプションの洗い出し
+				if ( value.type_raw == "カテゴリ（チェックボックス）" ) {
+					rendarBuff[i].use_category = 1;
+				}
+				if ( value.type_raw == "拡張フィールド" ) {
+					rendarBuff[i].use_extfield = 1;
+				}
+				if ( value.type_raw == "ユニットシステム" ) {
+					rendarBuff[i].use_unit = 1;
+				}
+				if ( value.basename.indexOf("alt") != -1 ) {
+					rendarBuff[i].use_altlink = 1;
+				}
+
+				if ( $.inArray(value.type_raw, defaultFields) == -1 && $.inArray(value.basename, excludeCustomFields) == -1 ) {
+					return true;
+				}
+
+				rendarBuff[i].blog_id = i + 2;
+			});
 		}
 
 		return rendarBuff;

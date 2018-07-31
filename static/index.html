@@ -81,11 +81,6 @@ elements:
         type: {{type}}
 {{/customfield}}
     importer: custom_fields
-  template_set:
-    importer: template_set
-    data:
-      templates:
-        system:
 id: theme_from_{{basename}}
 label: {{name}}のテーマ
 name: {{name}}のテーマ
@@ -111,12 +106,44 @@ version: '1.0'
 					otherFieldHide: true
 				});
 
+				getOptionWidget();
+
 				{{#use_category}}
 				$.MTAppCustomize({
 					basename: 'category',
 					show_field: 'show'
 				});
 				{{/use_category}}
+
+				{{#use_unit}}
+				unitInit();
+
+				$("#customfield_entryunit").MTAppUnits(unitConfig, function(field) {
+					initField([]);
+				});
+				{{/use_unit}}
+
+				{{#use_altlink}}
+				getAltLinkWidget();
+				{{/use_altlink}}
+
+				{{#use_extfield}}
+				//$("#customfield_xxxxx").MTAppMultiConverter({
+				//	tbody: $("#mc-image").html(),
+				//	addClass: 'mc-image',
+				//	addition: true,
+				//	callbacks: {
+				//		init: function(selector){
+				//			selector.find("[data-mc-name='file']").MTAppAssetFieldsForUnit({
+				//				"assetType": "image", // image or file
+				//				"assetTypeLabel": ""
+				//			});
+				//		}
+				//	},
+				//	additionLabel: '画像を追加する',
+				//	build: false
+				//});
+				{{/use_extfield}}
 			}
 		break;
 
@@ -213,6 +240,7 @@ true
 
 	<script src="common/lib/jquery/jquery.js"></script>
 	<script src="common/lib/jszip/jszip.js"></script>
+	<script src="common/lib/papaparse/papaparse.js"></script>
 	<script src="common/lib/mustache/mustache.js"></script>
 	<script src="common/js/site.js"></script>
 </body>
