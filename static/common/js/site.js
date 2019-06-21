@@ -168,7 +168,10 @@ $(function () {
 						}
 
 						localBuff2 = {
-							label: currentLabel
+							label: currentLabel,
+							basename: "",
+							type: "",
+							type_raw: ""
 						};
 					}
 
@@ -179,6 +182,7 @@ $(function () {
 							var value = row.split(": ").pop();
 
 							localBuff2[key] = value;
+							localBuff2["type_raw"] = value;
 						}
 					}
 				}
@@ -252,6 +256,8 @@ $(function () {
 				return true
 			});
 
+			console.log(rendarBuff[i]);
+
 			// フィールド一覧を作成
 			rendarBuff[i].fieldraw = $.map(rendarBuff[i].field, function(value,key) {
 				var basename;
@@ -272,18 +278,22 @@ $(function () {
 
 			// カスタムフィールドを抽出
 			rendarBuff[i].customfield = $.grep(rendarBuff[i].field, function(value,key) {
+				console.log(value);
+
 				// 使用オプションの洗い出し
-				if ( value.type_raw == "カテゴリ（チェックボックス）" ) {
-					rendarBuff[i].use_category = 1;
-				}
-				if ( value.type_raw == "拡張フィールド" ) {
-					rendarBuff[i].use_extfield = 1;
-				}
-				if ( value.type_raw == "ユニットシステム" ) {
-					rendarBuff[i].use_unit = 1;
-				}
-				if ( value.basename.indexOf("alt") != -1 ) {
-					rendarBuff[i].use_altlink = 1;
+				if ( value.type_raw ) {
+					if ( value.type_raw.indexOf("カテゴリ") != -1 ) {
+						rendarBuff[i].use_category = 1;
+					}
+					if ( value.type_raw == "拡張フィールド" ) {
+						rendarBuff[i].use_extfield = 1;
+					}
+					if ( value.type_raw == "ユニットシステム" ) {
+						rendarBuff[i].use_unit = 1;
+					}
+					if ( value.basename.indexOf("alt") != -1 ) {
+						rendarBuff[i].use_altlink = 1;
+					}
 				}
 
 				if ( $.inArray(value.type_raw, defaultFields) == -1 && $.inArray(value.basename, excludeCustomFields) == -1 ) {
